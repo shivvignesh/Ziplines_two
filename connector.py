@@ -17,6 +17,14 @@ def create_seller(sid,sname):
 	mycursor.execute(sql, val)
 	mydb.commit()
 
+def get_seller():
+
+	sql="SELECT * FROM seller"
+	mycursor.execute(sql)
+
+	sellers=mycursor.fetchall()
+	return sellers
+
 def create_products(pid,pname,pprice,sid):
 
 	sql = "INSERT INTO products (product_id,product_name,seller_id,price) values (%s,%s,%s,%s) "
@@ -46,3 +54,43 @@ def get_products():
 	products=mycursor.fetchall()
 
 	return products
+
+def delete_product(pid):
+
+	sql = "DELETE FROM products WHERE product_id = %s"
+	val=(pid,)
+
+	mycursor.execute(sql,val)
+	mydb.commit()
+
+def get_employees():
+
+	sql="SELECT * FROM employee"
+	mycursor.execute(sql)
+	employees=mycursor.fetchall()
+
+	return employees
+
+def delete_employee(eid):
+	
+	sql="DELETE FROM employee WHERE employee_id = %s "
+	val=(eid,)
+	
+	mycursor.execute(sql,val)
+	mydb.commit()	
+
+def get_customers():
+
+	sql="SELECT * FROM customer"
+	mycursor.execute(sql)
+
+	customers=mycursor.fetchall()
+	return customers
+
+def delete_customers(cid):
+
+	sql= "DELETE FROM customer WHERE customer_id = %s"
+	val=(cid,)
+
+	mycursor.execute(sql,val)
+	mydb.commit()
