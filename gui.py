@@ -126,24 +126,34 @@ class Add_Products(Frame):
 		self.product_id_label=Label(self,text="id of products")
 		self.product_name_label=Label(self,text="Name of Product")
 		self.product_price_label=Label(self,text="Price of Product")
-		self.seller_id_label=Label(self,text="id of seller")
+		# self.seller_id_label=Label(self,text="id of seller")
 		
 		self.product_id=Text(self,height=2,width=30)
 		self.product_name=Text(self,height=2,width=30)
 		self.product_price=Text(self,height=2,width=30)
-		self.seller_id=Text(self,height=2,width=30)
+		# self.seller_id=Text(self,height=2,width=30)
 
+		option=['']
+		seller_ids=get_seller_id()
+
+		for r in seller_ids:
+			option.append(r)
+
+		options = list(set(option))		#to obtain only unique events 
+		self.variable = StringVar(self)
+		self.variable.set(options[0])		#Setting the default event
+		self.select = OptionMenu(self, self.variable,*options,command=self.get_value).grid(row =6,column =1,padx=10,pady=10)
 		
 	
 		self.product_id_label.grid(row=3,column=1,padx=10,pady=10)
 		self.product_name_label.grid(row=4,column=1,padx=10,pady=10)
 		self.product_price_label.grid(row=5,column=1,padx=10,pady=10)
-		self.seller_id_label.grid(row=6,column=1,padx=10,pady=10)
+		# self.seller_id_label.grid(row=6,column=1,padx=10,pady=10)
 
 		self.product_id.grid(row=3,column=2,padx=10,pady=10)
 		self.product_name.grid(row=4,column=2,padx=10,pady=10)
 		self.product_price.grid(row=5,column=2,padx=10,pady=10)
-		self.seller_id.grid(row=6,column=2,padx=10,pady=10)
+		# self.seller_id.grid(row=6,column=2,padx=10,pady=10)
 	
 		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(Home))
 		self.back_button.grid(row=2,column=3,padx=20,pady=20)
@@ -178,22 +188,29 @@ class Add_Products(Frame):
 		for i in products:
 			self.tree.insert("",END,values=i)
 
+		
+
+	def get_value(self,value):
+
+		self.id=value[0]
+		
 			
 	def add_product(self):
 
 		self.pid=self.product_id.get("1.0","end-1c")
 		self.pname=self.product_name.get("1.0","end-1c")
 		self.pprice=self.product_price.get("1.0","end-1c")
-		self.sid=self.seller_id.get("1.0","end-1c")
+		self.sid=self.id
+		# self.sid=self.seller_id.get("1.0","end-1c")
 
 		self.product_id.delete("1.0","end")
 		self.product_name.delete("1.0","end")
 		self.product_price.delete("1.0","end")
-		self.seller_id.delete("1.0","end")
+		# self.seller_id.delete("1.0","end")
 
 		create_products(self.pid,self.pname,self.pprice,self.sid)
 		
-		display_products.__init__().add_to_tree(self.pid,self.pname,self.sid,self.pprice)		
+				
 
 		self.treeview.insert('', 'end', values=( self.pid,self.pname,self.sid,self.pprice))
 
