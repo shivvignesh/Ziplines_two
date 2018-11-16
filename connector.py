@@ -94,3 +94,51 @@ def delete_customers(cid):
 
 	mycursor.execute(sql,val)
 	mydb.commit()
+
+def get_seller_id():
+
+	sql="SELECT seller_id from seller"
+	mycursor.execute(sql)
+
+	seller_ids=mycursor.fetchall()
+	return seller_ids
+
+def create_orders(oid, pid, pname, sid, sname, pprice, cid, cname, stat, ename):
+
+	sql = "INSERT INTO orders(order_id, product_id, product_name, seller_id, seller_name, price, customer_id, customer_name, status, employee_name) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+	val = (oid, pid, pname, sid, sname, pprice, cid, cname, stat, ename)
+
+	mycursor.execute(sql,val)
+	mydb.commit()
+
+def get_orders():
+
+	sql="SELECT * FROM orders"
+	mycursor.execute(sql)
+
+	orders=mycursor.fetchall()
+	return orders
+
+def delete_order(oid):
+
+	sql= "DELETE FROM orders WHERE order_id = %s"
+	val=(oid,)
+
+	mycursor.execute(sql,val)
+	mydb.commit()	
+
+def get_product_id():
+
+	sql="SELECT product_id from products"
+	mycursor.execute(sql)
+
+	product_ids=mycursor.fetchall()
+	return product_ids
+
+def get_customer_id():
+
+	sql="SELECT customer_id from customer"
+	mycursor.execute(sql)
+
+	customer_ids=mycursor.fetchall()
+	return customer_ids
