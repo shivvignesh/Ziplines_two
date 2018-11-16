@@ -142,3 +142,56 @@ def get_customer_id():
 
 	customer_ids=mycursor.fetchall()
 	return customer_ids
+
+def get_customer_name(cid):
+
+	sql="SELECT customer_name from customer WHERE customer_id = %s"
+	val=(cid,)
+	mycursor.execute(sql,val)
+
+	customer_names=mycursor.fetchall()
+	return customer_names
+
+def get_product_name(pid):
+
+	sql="SELECT product_name from products WHERE product_id = %s"
+	val=(pid,)
+	mycursor.execute(sql,val)
+
+	product_names=mycursor.fetchall()
+	return product_names
+
+def get_seller_name(sid):
+
+	sql="SELECT seller_name from seller WHERE seller_id = %s"
+	val=(sid,)
+	mycursor.execute(sql,val)
+
+	seller_names=mycursor.fetchall()
+	return seller_names
+
+def get_seller_id():
+
+	sql="SELECT seller_id from seller"
+	mycursor.execute(sql)
+
+	seller_ids=mycursor.fetchall()
+	return seller_ids
+
+def get_seller_name():
+
+	sql="SELECT products.product_id, products.product_name, seller.seller_id, seller.seller_name from products INNER JOIN seller WHERE products.seller_id = seller.seller_id"
+	mycursor.execute(sql)
+
+	seller_name=mycursor.fetchall()
+	return seller_name
+
+def search_products(pname,pprice):
+
+	sql="SELECT * from products WHERE product_name=%s and price<=%s"
+	val=(pname,pprice)
+
+	mycursor.execute(sql,val)
+	products=mycursor.fetchall()
+	return products
+

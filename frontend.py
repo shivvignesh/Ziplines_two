@@ -107,30 +107,49 @@ class Add_Products(Frame):
 		self.product_id_label=Label(self,text="id of products")
 		self.product_name_label=Label(self,text="Name of Product")
 		self.product_price_label=Label(self,text="Price of Product")
-		self.seller_id_label=Label(self,text="id of seller")
+		# self.seller_id_label=Label(self,text="id of seller")
 		
 		self.product_id=Text(self,height=2,width=30)
 		self.product_name=Text(self,height=2,width=30)
 		self.product_price=Text(self,height=2,width=30)
-		self.seller_id=Text(self,height=2,width=30)
+		# self.seller_id=Text(self,height=2,width=30)
 
-		
+		option=[]
+		seller_ids=get_seller_id()
+
+		for r in seller_ids:
+			option.append(r)
+
+		options = list(set(option))		#to obtain only unique events 
+		variable = StringVar(self)
+		variable.set(options[0])		#Setting the default event
+		self.select = OptionMenu(self, variable,*options,command=self.get_value).grid(row =6,column =1,padx=10,pady=10)
+			
+
 	
 		self.product_id_label.grid(row=3,column=1,padx=10,pady=10)
 		self.product_name_label.grid(row=4,column=1,padx=10,pady=10)
 		self.product_price_label.grid(row=5,column=1,padx=10,pady=10)
-		self.seller_id_label.grid(row=6,column=1,padx=10,pady=10)
+		# self.seller_id_label.grid(row=6,column=1,padx=10,pady=10)
 
 		self.product_id.grid(row=3,column=2,padx=10,pady=10)
 		self.product_name.grid(row=4,column=2,padx=10,pady=10)
 		self.product_price.grid(row=5,column=2,padx=10,pady=10)
-		self.seller_id.grid(row=6,column=2,padx=10,pady=10)
+		# self.seller_id.grid(row=6,column=2,padx=10,pady=10)
 	
 		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(display_products))
 		self.back_button.grid(row=2,column=3,padx=20,pady=20)
 
 		self.submit_button=Button(self,text="Submit",command=self.add_product)
 		self.submit_button.grid(row=3,column=3,padx=20,pady=20)
+
+
+	def get_value(self,value):
+
+		print(value)
+
+
+		
 
 	def add_product(self):
 		self.pid=self.product_id.get("1.0","end-1c")

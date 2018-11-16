@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import messagebox
 from connector import *
 
 LARGE_FONT=("Verdana",20)
@@ -20,10 +21,10 @@ class Ziplines(Tk):
 		container.grid_columnconfigure(0,weight=1)
 		
 
-		self.geometry("800x600")
+		self.geometry("1600x1200")
 		self.frames={}
 		#initialization of frames in the dictionary with key as the frame name and object returned as the value
-		for F in (Home,Seller_info,Add_Products,Add_Employees,Add_Customers,Add_Orders):
+		for F in (Home,Seller_info,Add_Products,Add_Employees,Add_Customers,Add_Orders,Display,display_prod_name_price):
 			frame=F(parent=container,controller=self)
 			self.frames[F]=frame
 			frame.grid(row=0,column=0,sticky="nsew")
@@ -133,7 +134,7 @@ class Add_Products(Frame):
 		self.product_price=Text(self,height=2,width=30)
 		# self.seller_id=Text(self,height=2,width=30)
 
-		option=['']
+		option=[0]
 		seller_ids=get_seller_id()
 
 		for r in seller_ids:
@@ -158,13 +159,17 @@ class Add_Products(Frame):
 		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(Home))
 		self.back_button.grid(row=2,column=3,padx=20,pady=20)
 
-
+		self.display_button=Button(self,text="Display",command=lambda:controller.show_frame(Display))
+		self.display_button.grid(row=5,column=3,padx=10, pady=10)
 
 		self.submit_button=Button(self,text="Submit",command=self.add_product)
 		self.submit_button.grid(row=3,column=3,padx=20,pady=20)
 
 		self.select_button=Button(self,text="delete",command=self.select_item)
 		self.select_button.grid(row=4,column=3,padx=10,pady=10)
+
+		self.search_button=Button(self,text="search",command=lambda:controller.show_frame(display_prod_name_price))
+		self.search_button.grid(row=5,column=3,padx=10,pady=10)
 
 		self.tree=Treeview( self, columns=('#1','#2','#3', '#4'))
 		self.tree.heading('#1',text='ID')
@@ -201,16 +206,22 @@ class Add_Products(Frame):
 		self.pname=self.product_name.get("1.0","end-1c")
 		self.pprice=self.product_price.get("1.0","end-1c")
 		self.sid=self.id
-		# self.sid=self.seller_id.get("1.0","end-1c")
+		
 
+		
+
+		# if (self.pid or self.pname or self.pprice or self.sid) == "":
+		# 	self.popup=messagebox.showwarning('warning','incomplete info')
+
+		
 		self.product_id.delete("1.0","end")
 		self.product_name.delete("1.0","end")
 		self.product_price.delete("1.0","end")
-		# self.seller_id.delete("1.0","end")
+				# self.seller_id.delete("1.0","end")
 
 		create_products(self.pid,self.pname,self.pprice,self.sid)
-		
-				
+			
+						
 
 		self.treeview.insert('', 'end', values=( self.pid,self.pname,self.sid,self.pprice))
 
@@ -232,6 +243,39 @@ class Add_Products(Frame):
 		
 		for selected_item in selected_items:
 			self.treeview.delete(selected_item)
+
+class Display(Frame):
+	
+	def __init__(self,parent,controller):
+
+
+		Frame.__init__(self,parent)
+		self.controller=controller
+
+		self.tree=Treeview( self, columns=('#1','#2','#3', '#4'))
+		self.tree.heading('#1',text='Product ID')
+		self.tree.heading('#2',text='Product Name')
+		self.tree.heading('#3',text='Seller ID')
+		self.tree.heading('#4',text='Seller Name')
+
+		self.tree.column('#1',stretch=YES)
+		self.tree.column('#2',stretch=YES)
+		self.tree.column('#3', stretch=YES)
+		self.tree.column('#4', stretch=YES)
+
+		self.tree.grid(row=1, column=1 ,padx=10,pady=10,columnspan=4, sticky='nsew')
+		self.tree['show']='headings'
+		# self.tree.bind('<Button-1>', self.select_item)
+
+		self.treeview = self.tree
+
+		join=get_seller_name()
+		
+		for i in join:
+			self.tree.insert("",END,values=i)
+
+		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(Add_Products))
+		self.back_button.grid(row=2,column=2,padx=20,pady=20)
 
 
 		
@@ -619,14 +663,23 @@ class Add_Orders(Frame):
 	def product_get_value(self,value):
 
 		self.prod_id=value[0]
+
+		self.prod_name=get_product_name(self.prod_id)
+		self.product_name.insert('end',self.prod_name)
 		
 	def get_value(self,value):
 
 		self.id=value[0]
 		
+		self.sell_name=get_seller_name(self.id)
+		self.seller_name.insert('end',self.sell_name)
+
 	def customer_get_value(self,value):
 
-		self.cust_id=value[0]				
+		self.cust_id=value[0]
+
+		self.cust_name=get_customer_name(self.cust_id)
+		self.customer_name.insert('end',self.cust_name)
 
 
 	def add_orders(self):
@@ -656,6 +709,7 @@ class Add_Orders(Frame):
 		self.status.delete("1.0","end")
 		self.employee_name.delete("1.0","end")
 
+
 		create_orders(self.oid, self.pid, self.pname, self.sid, self.sname, self.pprice, self.cid, self.cname, self.stat, self.ename)
 		self.treeview.insert("",'end',values=(self.oid, self.pid, self.pname, self.sid, self.sname, self.pprice, self.cid, self.cname, self.stat, self.ename))
 
@@ -678,10 +732,59 @@ class Add_Orders(Frame):
 			self.treeview.delete(selected_item)
 
 
+class display_prod_name_price(Frame):
+
+	def __init__(self,parent,controller):
 
 
+		Frame.__init__(self,parent)
+		self.controller=controller
 
+		self.product_name_label=Label(self,text="product name").grid(row=3,column=4,padx=10,pady=10)
+		self.product_price_label=Label(self,text="product price").grid(row=4,column=4,padx=10,pady=10)
+
+		self.prod_name=Text(self,height=1,width=15)
+		self.prod_price=Text(self,height=1,width=15)
+
+		self.prod_name.grid(row=3,column=5,padx=10,pady=10)
+		self.prod_price.grid(row=4,column=5,padx=10,pady=10)
+
+		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(Add_Products))
+		self.back_button.grid(row=1,column=5,padx=20,pady=20)	
+
+		self.submit_button=Button(self,text="Submit",command=self.display)
+		self.submit_button.grid(row=1,column=7,padx=20,pady=20)
+
+	def display(self):
+
+		self.prodname=self.prod_name.get("1.0","end-1c")
+		self.prodprice=self.prod_price.get("1.0","end-1c")
+
+		self.prod_name.delete("1.0","end")
+		self.prod_price.delete("1.0","end")
+
+		self.tree=Treeview( self, columns=('#1','#2','#3', '#4'))
+		self.tree.heading('#1',text='ID')
+		self.tree.heading('#2',text='Name')
+		self.tree.heading('#3',text='seller id')
+		self.tree.heading('#4',text='price')
+
+		self.tree.column('#1',stretch=YES)
+		self.tree.column('#2',stretch=YES)
+		self.tree.column('#3', stretch=YES)
+		self.tree.column('#4', stretch=YES)
+
+
+		self.tree.grid(row=10, column=4 ,padx=10,pady=10,columnspan=4, sticky='nsew')
+		self.tree['show']='headings'
+		# self.tree.bind('<Button-1>', self.select_item)
+
+		self.treeview = self.tree
+
+		prods=search_products(self.prodname,self.prodprice)
 		
+		for i in prods:
+			self.tree.insert('','end',values=i)
 			
 
 app=Ziplines()
