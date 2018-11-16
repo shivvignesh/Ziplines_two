@@ -148,6 +148,8 @@ class Add_Products(Frame):
 		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(Home))
 		self.back_button.grid(row=2,column=3,padx=20,pady=20)
 
+
+
 		self.submit_button=Button(self,text="Submit",command=self.add_product)
 		self.submit_button.grid(row=3,column=3,padx=20,pady=20)
 
@@ -178,6 +180,7 @@ class Add_Products(Frame):
 
 			
 	def add_product(self):
+
 		self.pid=self.product_id.get("1.0","end-1c")
 		self.pname=self.product_name.get("1.0","end-1c")
 		self.pprice=self.product_price.get("1.0","end-1c")
@@ -189,6 +192,9 @@ class Add_Products(Frame):
 		self.seller_id.delete("1.0","end")
 
 		create_products(self.pid,self.pname,self.pprice,self.sid)
+		
+		display_products.__init__().add_to_tree(self.pid,self.pname,self.sid,self.pprice)		
+
 		self.treeview.insert('', 'end', values=( self.pid,self.pname,self.sid,self.pprice))
 
 	def select_item(self):
@@ -210,7 +216,7 @@ class Add_Products(Frame):
 		for selected_item in selected_items:
 			self.treeview.delete(selected_item)
 
-      
+
 		
 class Add_Employees(Frame):
 	
@@ -222,28 +228,35 @@ class Add_Employees(Frame):
 
 		self.emp_id_label=Label(self,text="Id of Employee")
 		self.emp_name_label=Label(self,text="Name of Employee")
-		self.emp_gender_label=Label(self,text="Gender")
+		# self.emp_gender_label=Label(self,text="Gender")
 		self.emp_dob_label=Label(self,text="Employee Date of Birth")
 		self.emp_salary_label=Label(self,text="Employee salary")
 		self.emp_phno_label=Label(self,text="Phone Number")
 		
 		self.emp_id=Text(self,height=2,width=30)
 		self.emp_name=Text(self,height=2,width=30)
-		self.emp_gender=Text(self,height=2,width=30)
+		# self.emp_gender=Text(self,height=2,width=30)
+
+		self.var=StringVar()
+
+
+		self.r1=Radiobutton(self,text="male",variable=self.var,value="m",command=self.selected).grid(row=4,column=2,padx=10,pady=10)
+		self.r2=Radiobutton(self,text="female",variable=self.var,value="f",command=self.selected).grid(row=4,column=3,padx=10,pady=10)
+
 		self.emp_dob=Text(self,height=2,width=30)
 		self.emp_salary=Text(self,height=2,width=30)
 		self.emp_phno=Text(self,height=2,width=30)
 		
 		self.emp_id_label.grid(row=2,column=1,padx=10,pady=10)
 		self.emp_name_label.grid(row=3,column=1,padx=10,pady=10)
-		self.emp_gender_label.grid(row=4,column=1,padx=10,pady=10)
+		# self.emp_gender_label.grid(row=4,column=1,padx=10,pady=10)
 		self.emp_dob_label.grid(row=5,column=1,padx=10,pady=10)
 		self.emp_salary_label.grid(row=6,column=1,padx=10,pady=10)
 		self.emp_phno_label.grid(row=7,column=1,padx=10,pady=10)
 
 		self.emp_id.grid(row=2,column=2,padx=10,pady=10)
 		self.emp_name.grid(row=3,column=2,padx=10,pady=10)
-		self.emp_gender.grid(row=4,column=2,padx=10,pady=10)
+		# self.emp_gender.grid(row=4,column=2,padx=10,pady=10)
 		self.emp_dob.grid(row=5,column=2,padx=10,pady=10)
 		self.emp_salary.grid(row=6,column=2,padx=10,pady=10)
 		self.emp_phno.grid(row=7,column=2,padx=10,pady=10)
@@ -284,21 +297,28 @@ class Add_Employees(Frame):
 		for i in employees:
 			self.tree.insert("",END,values=i)
 
+		
 
+	def selected(self):
+		
+		self.gender=self.var.get()		
 
 	def add_employee(self):
 
 			
 		self.eid=self.emp_id.get("1.0","end-1c")
 		self.ename=self.emp_name.get("1.0","end-1c")
-		self.egender=self.emp_gender.get("1.0","end-1c")
+		# self.egender=self.emp_gender.get("1.0","end-1c")
 		self.edob=self.emp_dob.get("1.0","end-1c")
 		self.esalary=self.emp_salary.get("1.0","end-1c")
 		self.ephno=self.emp_phno.get("1.0","end-1c")
+		self.egender=self.gender
+		print(self.egender)
+
 
 		self.emp_id.delete("1.0","end")
 		self.emp_name.delete("1.0","end")
-		self.emp_gender.delete("1.0","end")
+		# self.emp_gender.delete("1.0","end")
 		self.emp_dob.delete("1.0","end")
 		self.emp_salary.delete("1.0","end")
 		self.emp_phno.delete("1.0","end")
@@ -421,157 +441,11 @@ class Add_Customers(Frame):
 			self.treeview.delete(selected_item)
 	
 
-# class display_products(Frame):
-
-# 	def __init__(self,parent,controller):
 
 
-# 		Frame.__init__(self,parent)
-# 		self.controller=controller
-
-# 		self.tree=Treeview( self, columns=('#1','#2','#3', '#4'))
-# 		self.tree.heading('#1',text='ID')
-# 		self.tree.heading('#2',text='Name')
-# 		self.tree.heading('#3',text='Price')
-# 		self.tree.heading('#4',text='seller id')
-
-# 		self.tree.column('#1',stretch=YES)
-# 		self.tree.column('#2',stretch=YES)
-# 		self.tree.column('#3', stretch=YES)
-# 		self.tree.column('#4', stretch=YES)
-# 		self.tree.grid(row=4, column=4 ,padx=10,pady=10,columnspan=4, sticky='nsew')
-# 		self.tree['show']='headings'
-# 		# self.tree.bind('<Button-1>', self.select_item)
-
-# 		self.treeview = self.tree
 
 
-# 		products=get_products()
 
-# 		for i in products:
-# 			self.tree.insert("",END,values=i)
-
-# 		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(Home))
-# 		self.back_button.grid(row=6,column=3,padx=20,pady=20) 		
-		
-# 		self.select_button=Button(self,text="delete",command=self.select_item)
-# 		self.select_button.grid(row=6,column=4,padx=10,pady=10)
-
-# 		self.add_product_button=Button(self,text="Add Products",command=lambda:controller.show_frame(Add_Products))
-# 		self.add_product_button.grid(row=6,column=5,padx=10,pady=10)
-
-# 	def select_item(self):
-		 
-# 		 self.curItem = self.tree.focus()
-# 		 print (self.tree.item(self.curItem))
-# 		 self.dict_item=self.tree.item(self.curItem)
-# 		 print(type(self.dict_item))
-# 		 self.product_list=[]
-# 		 self.product_list=self.dict_item.get('values')
-# 		 print(self.product_list)
-# 		 self.product_id=self.product_list[0]
-	
-
-		 # delete_product(self.product_id)
-
-	 
-
-# class display_employees(Frame):
-
-# 	def __init__(self,parent,controller):
-
-
-# 		Frame.__init__(self,parent)
-# 		self.controller=controller
-
-
-# 		self.tree=Treeview( self, columns=('#1','#2','#3', '#4','#5','#6'))
-# 		self.tree.heading('#1',text='ID')
-# 		self.tree.heading('#2',text='Name')
-# 		self.tree.heading('#3',text='Gender')
-# 		self.tree.heading('#4',text='dob')
-# 		self.tree.heading('#5',text='salary')
-# 		self.tree.heading('#6',text='Phone')
-
-# 		self.tree.column('#1',stretch=YES)
-# 		self.tree.column('#2',stretch=YES)
-# 		self.tree.column('#3', stretch=YES)
-# 		self.tree.column('#4', stretch=YES)
-# 		self.tree.column('#5', stretch=YES)
-# 		self.tree.column('#6', stretch=YES)
-
-# 		self.tree.grid(row=4, column=4 ,padx=10,pady=10,columnspan=4, sticky='nsew')
-# 		self.tree['show']='headings'
-# 		# self.tree.bind('<Button-1>', self.select_item)
-
-# 		self.treeview = self.tree
-
-# 		employees=get_employees()
-		
-# 		for i in employees:
-# 			self.tree.insert("",END,values=i)
-
-# 		self.back_button=Button(self,text="back",command=lambda:controller.show_frame(Home))
-# 		self.back_button.grid(row=6,column=3,padx=10,pady=10)
-
-# 		self.select_button=Button(self,text="delete",command=self.delete_employee)
-# 		self.select_button.grid(row=6,column=4,padx=10,pady=10)
-
-# 		self.add_employee_button=Button(self,text="Add Employee",command=lambda:controller.show_frame(Add_Employees))
-# 		self.add_employee_button.grid(row=6,column=5,padx=10,pady=10)
-
-# 	def delete_employee(self):
-
-# 		self.curItem = self.tree.focus()
-# 		print (self.tree.item(self.curItem))
-# 		self.dict_item=self.tree.item(self.curItem)
-# 		print(type(self.dict_item))
-# 		self.employee_list=[]
-# 		self.employee_list=self.dict_item.get('values')
-# 		print(self.employee_list)
-# 		self.employee_id=self.employee_list[0]
-
-# 		delete_employee(self.employee_id)
-		
-
-# class display_customers(Frame):
-
-# 	def __init__(self,parent,controller):
-
-
-# 		Frame.__init__(self,parent)
-# 		self.controller=controller
-
-# 		self.tree=Treeview( self, columns=('#1','#2','#3', '#4'))
-# 		self.tree.heading('#1',text='ID')
-# 		self.tree.heading('#2',text='Name')
-# 		self.tree.heading('#3',text='Phone')
-# 		self.tree.heading('#4',text='Address')
-
-# 		self.tree.column('#1',stretch=YES)
-# 		self.tree.column('#2',stretch=YES)
-# 		self.tree.column('#3', stretch=YES)
-# 		self.tree.column('#4', stretch=YES)
-
-
-# 		self.tree.grid(row=4, column=4 ,padx=10,pady=10,columnspan=4, sticky='nsew')
-# 		self.tree['show']='headings'
-# 		# self.tree.bind('<Button-1>', self.select_item)
-
-# 		self.treeview = self.tree
-
-# 		customers=get_customers()
-
-# 		for i in customers:
-
-# 			self.tree.insert("",END,values=i)
-
-# 		self.back_button=Button(self,text="back",command=lambda:controller.show_frame(Home))
-# 		self.back_button.grid(row=6,column=3,padx=10,pady=10)
-		
-
-# 		self.add_customer_button=Button(self,text="Add customers",command=lambda:controller.show_frame(Add_Customers))
-# 		self.add_customer_button.grid(row=6,column=5,padx=10,pady=10)
 		
 			
 
