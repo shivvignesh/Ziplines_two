@@ -170,7 +170,7 @@ class Add_Products(Frame):
 		self.select_button.grid(row=4,column=3,padx=10,pady=10)
 
 		self.search_button=Button(self,text="search",command=lambda:controller.show_frame(display_prod_name_price))
-		self.search_button.grid(row=5,column=3,padx=10,pady=10)
+		self.search_button.grid(row=8,column=3,padx=10,pady=10)
 
 		self.update_button=Button(self,text="update",command=self.update_products)
 		self.update_button.grid(row=6,column=3,padx=10,pady=10)
@@ -569,6 +569,14 @@ class Add_Customers(Frame):
 		self.select_button=Button(self,text="delete",command=self.select_item)
 		self.select_button.grid(row=10,column=5,padx=20,pady=20)
 
+		self.update_button=Button(self,text="update",command=self.update_customer)
+		self.update_button.grid(row=7,column=3,padx=10,pady=10)
+
+		self.apply_button=Button(self,text="apply changes",command=self.apply_cust_update)
+		self.apply_button.grid(row=7,column=4,padx=10,pady=10)
+
+
+
 		self.tree=Treeview( self, columns=('#1','#2','#3', '#4'))
 		self.tree.heading('#1',text='ID')
 		self.tree.heading('#2',text='Name')
@@ -626,6 +634,50 @@ class Add_Customers(Frame):
 		
 		for selected_item in selected_items:
 			self.treeview.delete(selected_item)
+
+	def update_customer(self):
+
+		self.curItem = self.tree.focus()
+		print (self.tree.item(self.curItem))
+		self.dict_item=self.tree.item(self.curItem)
+		print(type(self.dict_item))
+		self.customer_list=[]
+		self.customer_list=self.dict_item.get('values')
+		print(self.customer_list)
+		
+		self.cus_id=self.customer_list[0]
+		self.cus_name=self.customer_list[1]
+		self.cus_phno=self.customer_list[2]
+		self.cus_addres=self.customer_list[3]
+
+
+		self.cust_id.insert('end',self.cus_id)
+		self.cust_name.insert('end',self.cus_name)
+		self.cust_phno.insert('end',self.cus_phno)
+		self.cust_address.insert('end',self.cus_addres)
+		
+	
+	def apply_cust_update(self):
+
+		self.cid = self.cust_id.get("1.0","end-1c")
+		self.cname = self.cust_name.get("1.0","end-1c")
+		self.cphno = self.cust_phno.get("1.0","end-1c")
+		self.caddress = self.cust_address.get("1.0","end-1c")
+
+		self.cust_id.delete("1.0","end")
+		self.cust_name.delete("1.0","end")
+		self.cust_phno.delete("1.0","end")
+		self.cust_address.delete("1.0","end")
+
+		update_customer(self.cid, self.cname, self.cphno, self.caddress)
+		
+		selected_items = self.treeview.selection()
+		
+		for selected_item in selected_items:
+			self.treeview.delete(selected_item)
+
+		self.treeview.insert('', 'end', values=( self.cid, self.cname, self.cphno, self.caddress))	
+		
 	
 
 class Add_Orders(Frame):

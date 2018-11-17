@@ -217,7 +217,14 @@ def update_employee(eid,ename,egender,edob,esalary,ephno):
 	mycursor.execute(sql,val)
 	mydb.commit()
 
-	
+def update_customer(cid,cname,cphno,caddress):
+
+	sql="UPDATE customer set customer_name=%s,customer_phno=%s,customer_address=%s WHERE customer_id=%s"
+	val=(cname,cphno,caddress,cid)
+
+	mycursor.execute(sql,val)
+	mydb.commit()
+
 
 
 
