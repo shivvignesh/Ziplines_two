@@ -209,4 +209,16 @@ def update_product(pid,pname,pprice,sid):
 	new_product=mycursor.fetchall()
 	return new_product
 
+def update_employee(eid,ename,egender,edob,esalary,ephno):
+
+	sql="UPDATE employee set employee_name=%s,employee_gender=%s,employee_dob=%s,employee_salary=%s,employee_phno=%s WHERE employee_id=%s"
+	val=(ename,egender,edob,esalary,ephno,eid)
+
+	mycursor.execute(sql,val)
+	mydb.commit()
+
+	
+
+
+
 

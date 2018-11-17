@@ -397,6 +397,12 @@ class Add_Employees(Frame):
 		self.select_button=Button(self,text="delete",command=self.select_item)
 		self.select_button.grid(row=10,column=5,padx=20,pady=20)
 
+		self.update_button=Button(self,text="update",command=self.update_employee)
+		self.update_button.grid(row=6,column=3,padx=10,pady=10)
+
+		self.apply_button=Button(self,text="apply changes",command=self.apply_emp_update)
+		self.apply_button.grid(row=7,column=3,padx=10,pady=10)
+
 
 		self.tree=Treeview( self, columns=('#1','#2','#3', '#4','#5','#6'))
 		self.tree.heading('#1',text='ID')
@@ -425,22 +431,8 @@ class Add_Employees(Frame):
 			self.tree.insert("",END,values=i)
 
 	
-	# def opencal(self,msg):
-	# 	self.popup=tk.Toplevel()
-		
-	# 	self.msg=self.popup.wm_title("calender")
-	# 	self.la=ttk.Label(self.popup, text=msg, font=LARGE_FONT)
-	# 	self.la.grid(row=0,column=0, sticky='w')
-	# 	self.cal=Calendar(self.popup, font="Arial 14", selectmode='day',
-	# 					cursor='hand1', year=2018, month=2, day=5)
-	# 	self.bu=ttk.Button(self.popup, text="OK", command=self.print_sel)
+	
 
-	# 	print(self.cal)
-
-	# 	self.cal.grid(row=1,column=0, sticky='w')
-	# 	self.bu.grid(row=2, column=0, sticky='w')
-
-	# 	self.popup.mainloop()
 
 
 
@@ -488,6 +480,56 @@ class Add_Employees(Frame):
 		
 		for selected_item in selected_items:
 			self.treeview.delete(selected_item)
+
+
+	def update_employee(self):
+
+		self.curItem = self.tree.focus()
+		print (self.tree.item(self.curItem))
+		self.dict_item=self.tree.item(self.curItem)
+		print(type(self.dict_item))
+		self.employee_list=[]
+		self.employee_list=self.dict_item.get('values')
+		print(self.employee_list)
+		self.employee_id=self.employee_list[0]
+		self.employee_name=self.employee_list[1]
+		self.employee_gender=self.employee_list[2]
+		self.employee_dob=self.employee_list[3]
+		self.employee_salary=self.employee_list[4]
+		self.employee_phno=self.employee_list[5]
+
+		self.emp_id.insert('end',self.employee_id)
+		self.emp_name.insert('end',self.employee_name)
+		self.emp_dob.insert('end',self.employee_dob)
+		self.emp_salary.insert('end',self.employee_salary)
+		self.emp_phno.insert('end',self.employee_phno)
+	
+	def apply_emp_update(self):
+
+		self.eid=self.emp_id.get("1.0","end-1c")
+		self.ename=self.emp_name.get("1.0","end-1c")
+		# self.egender=self.emp_gender.get("1.0","end-1c")
+		self.edob=self.emp_dob.get("1.0","end-1c")
+		self.esalary=self.emp_salary.get("1.0","end-1c")
+		self.ephno=self.emp_phno.get("1.0","end-1c")
+		self.egender=self.gender
+
+		self.emp_id.delete("1.0","end")
+		self.emp_name.delete("1.0","end")
+		# self.emp_gender.delete("1.0","end")
+		self.emp_dob.delete("1.0","end")
+		self.emp_salary.delete("1.0","end")
+		self.emp_phno.delete("1.0","end")
+
+		update_employee(self.eid,self.ename,self.egender,self.edob,self.esalary,self.ephno)
+
+		selected_items = self.treeview.selection()
+		
+		for selected_item in selected_items:
+			self.treeview.delete(selected_item)
+
+		self.treeview.insert('', 'end', values=( self.eid,self.ename,self.egender,self.edob,self.esalary,self.ephno))	
+			
 
 
 class Add_Customers(Frame):
