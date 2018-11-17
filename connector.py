@@ -195,3 +195,18 @@ def search_products(pname,pprice):
 	products=mycursor.fetchall()
 	return products
 
+def update_product(pid,pname,pprice,sid):
+
+	sql="UPDATE products set product_name=%s,price=%s,seller_id=%s WHERE product_id=%s"
+	val=(pname,pprice,sid,pid)
+
+	mycursor.execute(sql,val)
+	mydb.commit()
+
+	sql="SELECT * FROM products WHERE product_id=%s"
+	val=(pid,)
+	mycursor.execute(sql,val)
+	new_product=mycursor.fetchall()
+	return new_product
+
+
