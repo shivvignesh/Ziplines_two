@@ -43,6 +43,7 @@ class Home(Frame):
 		Frame.__init__(self,parent)
 		self.controller=controller
 
+		self.photo=PhotoImage(file="graphic_product.jpg")
 
 		label = Label(self, text="Home", font=LARGE_FONT )
 		label.grid(row=2, column=2, padx=10,pady=10)
@@ -54,7 +55,7 @@ class Home(Frame):
 		button4=Button(self,text="Customers",command=lambda:controller.show_frame(Add_Customers))		
 		button5=Button(self,text="orders",command=lambda:controller.show_frame(Add_Orders))
 		button6=Button(self,text="Seller info",command=lambda:controller.show_frame(Seller_info))
-
+		# button1.config(image=self.photo,width=10,height=30)
 
 		button1.grid(row =2, column = 2, padx=20, pady =20)
 		button2.grid(row = 3, column = 2, padx=20, pady =20)
@@ -171,6 +172,14 @@ class Add_Products(Frame):
 		self.search_button=Button(self,text="search",command=lambda:controller.show_frame(display_prod_name_price))
 		self.search_button.grid(row=5,column=3,padx=10,pady=10)
 
+		self.update_button=Button(self,text="update",command=self.update_products)
+		self.update_button.grid(row=6,column=3,padx=10,pady=10)
+
+		self.apply_button=Button(self,text="apply changes",command=self.apply_update)
+		self.apply_button.grid(row=7,column=3,padx=10,pady=10)
+
+
+
 		self.tree=Treeview( self, columns=('#1','#2','#3', '#4'))
 		self.tree.heading('#1',text='ID')
 		self.tree.heading('#2',text='Name')
@@ -202,28 +211,37 @@ class Add_Products(Frame):
 			
 	def add_product(self):
 
-		self.pid=self.product_id.get("1.0","end-1c")
-		self.pname=self.product_name.get("1.0","end-1c")
-		self.pprice=self.product_price.get("1.0","end-1c")
-		self.sid=self.id
-		
+		if (len(self.product_id.get('1.0','end-1c')) or len(self.product_name.get("1.0","end-1c")) 
+			or len(self.product_price.get("1.0","end-1c")) ) == 0:
 
-		
+			self.popup=messagebox.showwarning('warning','incomplete info')
 
-		# if (self.pid or self.pname or self.pprice or self.sid) == "":
-		# 	self.popup=messagebox.showwarning('warning','incomplete info')
 
-		
-		self.product_id.delete("1.0","end")
-		self.product_name.delete("1.0","end")
-		self.product_price.delete("1.0","end")
-				# self.seller_id.delete("1.0","end")
 
-		create_products(self.pid,self.pname,self.pprice,self.sid)
+		else:	
+
+			self.pid=self.product_id.get("1.0","end-1c")
+			self.pname=self.product_name.get("1.0","end-1c")
+			self.pprice=self.product_price.get("1.0","end-1c")
+			self.sid=self.id
 			
-						
 
-		self.treeview.insert('', 'end', values=( self.pid,self.pname,self.sid,self.pprice))
+					
+
+			# if (self.pid or self.pname or self.pprice or self.sid) == "":
+			# 	self.popup=messagebox.showwarning('warning','incomplete info')
+
+			
+			self.product_id.delete("1.0","end")
+			self.product_name.delete("1.0","end")
+			self.product_price.delete("1.0","end")
+					# self.seller_id.delete("1.0","end")
+
+			create_products(self.pid,self.pname,self.pprice,self.sid)
+				
+							
+
+			self.treeview.insert('', 'end', values=( self.pid,self.pname,self.sid,self.pprice))
 
 	def select_item(self):
 		 
@@ -243,6 +261,51 @@ class Add_Products(Frame):
 		
 		for selected_item in selected_items:
 			self.treeview.delete(selected_item)
+
+	def update_products(self):
+
+		self.curItem = self.tree.focus()
+		print (self.tree.item(self.curItem))
+		self.dict_item=self.tree.item(self.curItem)
+		print(type(self.dict_item))
+		self.product_list=[]
+		self.product_list=self.dict_item.get('values')
+		print(self.product_list)
+		self.prod_id=self.product_list[0]
+		self.prod_name=self.product_list[1]
+		self.prod_seller_id=self.product_list[2]
+		self.prod_price=self.product_list[3]
+
+		self.product_id.insert('end',self.prod_id)
+		self.product_name.insert('end',self.prod_name)
+		self.product_price.insert('end',self.prod_price)
+	
+	def apply_update(self):
+
+		self.pid=self.product_id.get("1.0","end-1c")
+		self.pname=self.product_name.get("1.0","end-1c")
+		self.pprice=self.product_price.get("1.0","end-1c")
+		self.sid=self.id
+
+		self.product_id.delete("1.0","end")
+		self.product_name.delete("1.0","end")
+		self.product_price.delete("1.0","end")
+
+		self.new_product=update_product(self.pid,self.pname,self.pprice,self.sid)
+		print(self.new_product)
+
+		selected_items = self.treeview.selection()
+		
+		for selected_item in selected_items:
+			self.treeview.delete(selected_item)
+
+		self.treeview.insert('', 'end', values=( self.pid,self.pname,self.sid,self.pprice))	
+
+
+
+
+
+
 
 class Display(Frame):
 	
@@ -785,6 +848,9 @@ class display_prod_name_price(Frame):
 		
 		for i in prods:
 			self.tree.insert('','end',values=i)
+
+
+
 			
 
 app=Ziplines()
