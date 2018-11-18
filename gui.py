@@ -332,7 +332,7 @@ class Display(Frame):
 
 		self.treeview = self.tree
 
-		join=get_seller_name()
+		join=get_seller_product()
 		
 		for i in join:
 			self.tree.insert("",END,values=i)
@@ -739,6 +739,14 @@ class Add_Orders(Frame):
 		self.submit_button=Button(self,text="Submit",command=self.add_orders)
 		self.submit_button.grid(row=3,column=5,padx=20,pady=20)
 
+		self.update_button=Button(self,text="update",command=self.update_order)
+		self.update_button.grid(row=2,column=3,padx=10,pady=10)
+
+		self.apply_button=Button(self,text="apply changes",command=self.apply_order_update)
+		self.apply_button.grid(row=2,column=4,padx=10,pady=10)
+
+
+
 		self.select_button=Button(self,text="delete",command=self.select_item)
 		self.select_button.grid(row=10,column=5,padx=20,pady=20)
 
@@ -766,7 +774,7 @@ class Add_Orders(Frame):
 		options = list(set(option))		#to obtain only unique events 
 		self.variable = StringVar(self)
 		self.variable.set(options[0])		#Setting the default event
-		self.select = OptionMenu(self, self.variable,*options,command=self.get_value).grid(row =5,column =2,padx=10,pady=10)
+		self.select = OptionMenu(self, self.variable,*options,command=self.seller_get_value).grid(row =5,column =2,padx=10,pady=10)
 
 		'''customer_id option menu'''
 
@@ -823,12 +831,15 @@ class Add_Orders(Frame):
 
 		self.prod_name=get_product_name(self.prod_id)
 		self.product_name.insert('end',self.prod_name)
-		
-	def get_value(self,value):
 
-		self.id=value[0]
+		self.product_price=get_product_price(self.prod_id)
+		self.price.insert('end',self.product_price)
 		
-		self.sell_name=get_seller_name(self.id)
+	def seller_get_value(self,value):
+
+		self.sellerid=value[0]
+		
+		self.sell_name=get_seller_name(self.sellerid)
 		self.seller_name.insert('end',self.sell_name)
 
 	def customer_get_value(self,value):
@@ -838,6 +849,7 @@ class Add_Orders(Frame):
 		self.cust_name=get_customer_name(self.cust_id)
 		self.customer_name.insert('end',self.cust_name)
 
+		
 
 	def add_orders(self):
 
@@ -846,7 +858,7 @@ class Add_Orders(Frame):
 		self.pid=self.prod_id
 		self.pname = self.product_name.get("1.0","end-1c")
 		# self.sid = self.seller_id.get("1.0","end-1c")
-		self.sid=self.id
+		self.sid=self.sellerid
 		self.sname = self.seller_name.get("1.0","end-1c")
 		self.pprice = self.price.get("1.0","end-1c")
 		# self.cid = self.customer_id.get("1.0","end-1c")
@@ -888,6 +900,74 @@ class Add_Orders(Frame):
 		for selected_item in selected_items:
 			self.treeview.delete(selected_item)
 
+	def update_order(self):
+
+		self.curItem = self.tree.focus()
+		print (self.tree.item(self.curItem))
+		self.dict_item=self.tree.item(self.curItem)
+		print(type(self.dict_item))
+		self.order_list=[]
+		self.order_list=self.dict_item.get('values')
+		print(self.order_list)
+		
+		self.ord_id=self.order_list[0]
+		self.prod_id=self.order_list[1]
+		self.prod_name=self.order_list[2]
+		self.sell_id=self.order_list[3]
+		self.sell_name=self.order_list[4]
+		self.prod_price=self.order_list[5]
+		self.cust_id=self.order_list[6]
+		self.cust_name=self.order_list[7]
+		self.ord_status=self.order_list[8]
+		self.emp_name=self.order_list[9]
+
+		self.order_id.insert('end',self.ord_id)
+		self.product_name.insert('end',self.prod_name)
+		self.seller_name.insert('end',self.sell_name)
+		self.price.insert('end',self.prod_price)
+		self.customer_name.insert('end',self.cust_name)
+		self.status.insert('end',self.ord_status)
+		self.employee_name.insert('end',self.emp_name)
+		
+	
+	def apply_order_update(self):
+
+		self.oid = self.order_id.get("1.0","end-1c")
+		# self.pid = self.product_id.get("1.0","end-1c")
+		self.pid=self.prod_id
+		self.pname = self.product_name.get("1.0","end-1c")
+		# self.sid = self.seller_id.get("1.0","end-1c")
+		self.sid=self.sellerid
+		self.sname = self.seller_name.get("1.0","end-1c")
+		self.pprice = self.price.get("1.0","end-1c")
+		# self.cid = self.customer_id.get("1.0","end-1c")
+		self.cid=self.cust_id
+		self.cname = self.customer_name.get("1.0","end-1c")
+		self.stat = self.status.get("1.0","end-1c")
+		self.ename = self.employee_name.get("1.0","end-1c")
+
+		self.order_id.delete("1.0","end")
+		# self.product_id.delete("1.0","end")
+		self.product_name.delete("1.0","end")
+		# self.seller_id.delete("1.0","end")
+		self.seller_name.delete("1.0","end")
+		self.price.delete("1.0","end")
+		# self.customer_id.delete("1.0","end")
+		self.customer_name.delete("1.0","end")
+		self.status.delete("1.0","end")
+		self.employee_name.delete("1.0","end")
+
+
+
+		update_order(self.oid, self.pid, self.pname, self.sid, self.sname, self.pprice, self.cid, self.cname, self.stat, self.ename)
+		
+		selected_items = self.treeview.selection()
+		
+		for selected_item in selected_items:
+			self.treeview.delete(selected_item)
+
+		self.treeview.insert('', 'end', values=(self.oid, self.pid, self.pname, self.sid, self.sname, self.pprice, self.cid, self.cname, self.stat, self.ename))	
+
 
 class display_prod_name_price(Frame):
 
@@ -909,6 +989,7 @@ class display_prod_name_price(Frame):
 		self.back_button=Button(self,text="Back",command=lambda:controller.show_frame(Add_Products))
 		self.back_button.grid(row=1,column=5,padx=20,pady=20)	
 
+		
 		self.submit_button=Button(self,text="Submit",command=self.display)
 		self.submit_button.grid(row=1,column=7,padx=20,pady=20)
 

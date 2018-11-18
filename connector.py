@@ -161,6 +161,14 @@ def get_product_name(pid):
 	product_names=mycursor.fetchall()
 	return product_names
 
+def get_product_price(pid):
+	sql="SELECT price from products WHERE product_id=%s"
+	val=(pid,)
+	mycursor.execute(sql,val)
+
+	product_price=mycursor.fetchall()
+	return product_price	
+
 def get_seller_name(sid):
 
 	sql="SELECT seller_name from seller WHERE seller_id = %s"
@@ -178,7 +186,7 @@ def get_seller_id():
 	seller_ids=mycursor.fetchall()
 	return seller_ids
 
-def get_seller_name():
+def get_seller_product():
 
 	sql="SELECT products.product_id, products.product_name, seller.seller_id, seller.seller_name from products INNER JOIN seller WHERE products.seller_id = seller.seller_id"
 	mycursor.execute(sql)
@@ -225,7 +233,13 @@ def update_customer(cid,cname,cphno,caddress):
 	mycursor.execute(sql,val)
 	mydb.commit()
 
+	
 
+def update_order(oid, pid, pname, sid, sname, pprice, cid, cname, stat, ename):
 
+	sql="UPDATE orders set product_id=%s,product_name=%s,seller_id=%s,seller_name=%s,price=%s,customer_id=%s,customer_name=%s,status=%s,employee_name=%s WHERE order_id=%s"
+	val=(pid, pname, sid, sname, pprice, cid, cname, stat, ename,oid)
 
+	mycursor.execute(sql,val)
+	mydb.commit()
 
